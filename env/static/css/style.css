@@ -1,0 +1,215 @@
+body {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto;
+    color: black;
+  }
+  .dark{
+    background-color: #2d2d2d;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto;
+    color: #ffffff;
+  }
+  
+  /* header */
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: auto;
+    align-items: center;
+    margin-top: 3.125rem;
+  }
+  
+  h1 {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 30px;
+  
+  }
+  
+  .blueButton {
+    width: 150px;
+    height: 40px;
+    background: #6264a7;
+    box-shadow: 0px 2px 2px #262626;
+    border-radius: 2px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.42);
+  }
+  
+  .mode{
+    display: flex;
+    width: 80%;
+    margin: auto;
+    height: 4vh;
+    font-size: 2.1vh;
+  }
+  
+  /* Meeting Details */
+  
+  .meetingDetails {
+    /* background-color: #ffffff; */
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    padding-bottom: 5rem;
+    margin: auto;
+    margin-top: 4.5rem;
+  }
+  
+  
+  
+  .head {
+    
+    background-color: rgb(245,245,245);
+    width: 100%;
+    margin: auto;
+    height: 5.4vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 26px;
+    color: black;
+    padding-left: 1.5rem;
+    border: 1px solid rgb(231, 228, 228);
+    box-sizing: border-box;
+  }
+  .headclass{
+    background-color: #3b3a39;
+    color: white;
+    border: 1px solid #757474;
+  }
+  
+  
+  .details {
+    width: 85%;
+    padding: 2rem;
+    padding-bottom: 3rem;
+    box-sizing: border-box;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .entity {
+    display: inline-block;
+  }
+  
+  #duration {
+    width: 20%;
+  }
+  
+  .filename1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* background: #3b3a39; */
+    width: 60%;
+    margin: auto;
+    height: 4.9vh;
+    padding-left: 20px;
+    border: 1px solid rgb(231, 226, 226);
+  }
+  .filename2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* background: #3b3a39; */
+    width: 60%;
+    margin: auto;
+    height: 4.9vh;
+    padding-left: 20px;
+    border: 1px solid rgb(231, 226, 226);
+  }
+  .fileclass{
+    background-color: rgb(59,58,57);
+    color: white;
+    border: 1px solid #757474;
+  
+  }
+  
+  input[type="file"]{
+    display:none;
+  }
+  
+  label{
+    margin: auto;
+    height: 35px;
+    margin-top: 1.5rem;
+    width: 110px;
+    background: #6264a7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: 0px 2px 2px #262626;
+    border-radius: 2px;
+  }
+  
+  /* Note */
+  
+  .note {
+    width: 80%;
+    margin: auto;
+    height: 18vh;
+    justify-content: none;
+  }
+  .change{
+    margin-left: 1%;
+    height: 25px;
+  }
+
+  .download{
+      /* 
+      height: 40px;
+      background: #6264a7;
+      box-shadow: 0px 2px 2px #262626;
+      border-radius: 2px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.42); */
+      /* width: 80px; */
+    color: #ffffff;
+    text-decoration: none;   
+    text-align: center;
+  }
+  .blueButton1 {
+    width: 95px;
+    height: 40px;
+    background: #6264a7;
+    box-shadow: 0px 2px 2px #262626;
+    border-radius: 2px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.42);
+  }
+  /* .btn{
+      display: flex;
+      justify-content: space-between;
+  } */

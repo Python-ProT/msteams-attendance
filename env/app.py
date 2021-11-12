@@ -40,27 +40,36 @@ def home():
 
 @app.route('/submit',methods=['POST','GET'])
 def submit():
-    if 'file' not in request.files:
+
+        
+    if 'files[]' not in request.files:
         flash('No file Selected') 
         return redirect(request.url)
-    file = request.files['file']
+    # file = request.files['file']
+    files = request.files.getlist('files[]')
     file2 = request.files['file2']
-    if file.filename == '' or file2.filename == '':
-        flash('No File selected for uploading')
-        return redirect(request.url)
-    if (file and allowed_file(file.filename)) and (file2 and allowed_file(file2.filename)):
-        filename = secure_filename(file.filename)
+    print(len(files))
+    print(files)
+    # if file2.filename == '':
+    #     flash('No File selected for uploading')
+    #     return redirect(request.url)
+    if file2 and allowed_file(file2.filename):
+        # filename = secure_filename(file.filename)
         global filename2
         filename2 = secure_filename(file2.filename)
         
-        file.save(os.path.join(app.config['UPLOADS_PATH'], filename))
+        # file.save(os.path.join(app.config['UPLOADS_PATH'], filename))
         file2.save(os.path.join(app.config['UPLOADS_PATH'], filename2))
-        
-       
-        compute(filename,filename2)
+        for file in files:
+            print(file)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOADS_PATH'], filename))
+                print(os.path.join(app.config['UPLOADS_PATH'], filename))
+            compute(filename,filename2)
         # download(filename2)
         
-        return render_template('index.html', filename=filename,filename2=filename2)
+        return render_template('index.html')
     else:
         return redirect(request.url) 
 
@@ -73,7 +82,7 @@ def download():
     return send_file(uploads,as_attachment=True) 
 
 
-
+# 09:15:00 AM
 def difftime(a, b):
     a = a.split(":")
     b = b.split(":")
@@ -83,9 +92,8 @@ def difftime(a, b):
         a[0] = str(int(a[0]) + 12)
     return (int(b[0]) - int(a[0]))*3600 + (int(b[1]) - int(a[1]))*60 + int(b[2][:2]) - int(a[2][:2])
 
-    # Minimum time calculation for setting start and end time for individual students
 
-
+# Minimum time calculation for setting start and end time for individual students
 def minitime(a, b):
     a = a.split(":")
     b = b.split(":")

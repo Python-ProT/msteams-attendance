@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pymongo
 import openpyxl
 from openpyxl.styles import PatternFill
 
@@ -67,6 +68,7 @@ def submit():
                 file.save(os.path.join(app.config['UPLOADS_PATH'], filename))
                 print(os.path.join(app.config['UPLOADS_PATH'], filename))
             compute(filename,filename2)
+            os.remove(os.path.join(app.config['UPLOADS_PATH'], filename))
         # download(filename2)
         
         return render_template('index.html')
@@ -76,10 +78,49 @@ def submit():
 @app.route('/download')
 def download():
     global filename2
+
+    file1 = os.path.join(app.config['UPLOADS_PATH'], filename2)
+    df = pd.read_excel(file1)
+    print("Welcome to pymongo")
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    print(client)
+
+    # df1.to_csv("try.csv", index=None, header=True)
+    # df = pd.read_csv(df1)
+    db =client["Attendance"]
+    print(db)
+    collection=db[filename2]
+    data = df.to_dict(orient="records")
+    print(data)
+    if collection.count()==0:
+        collection.insert_many(data)
+    os.remove(os.path.join(app.config['UPLOADS_PATH'], filename2))
+    all_docs = collection.find({},{'_id':0})
+    # for item in all_docs:
+    #     print(item)
+    list_cursor=list(all_docs)
+    df3=pd.DataFrame(list_cursor)
+    df3=df3.set_index("Scholar No")
+    print(df3)
+    df3.to_excel(os.path.join(app.config['UPLOADS_PATH'], filename2))
+    wb = openpyxl.load_workbook(os.path.join(app.config['UPLOADS_PATH'], filename2))
+    ws = wb['Sheet1']
+    fill_pattern = PatternFill(patternType='solid', fgColor='C64747')
+    for j in range(0, len(df3["Full Name"])):
+
+        if(df3["Percentage"][j] < 75):
+            my_list = list(df3)
+            index = my_list.index("Percentage")
+            col = chr(index+65+1)
+            ws[col+str(j+2)].fill = fill_pattern
+            wb.save(os.path.join(app.config['UPLOADS_PATH'], filename2))
     uploads=os.path.join(app.config['UPLOADS_PATH'], filename2)
     print(uploads)
+
     # uploads = "/home/yashita/Desktop/upload/env/static/uploads/try1.xlsx"
     return send_file(uploads,as_attachment=True) 
+# global filename2
+# os.remove(os.path.join(app.config['UPLOADS_PATH'],filename2))
 
 
 # 09:15:00 AM

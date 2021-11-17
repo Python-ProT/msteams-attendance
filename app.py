@@ -9,7 +9,11 @@ from flask import Flask, flash, request, redirect, url_for, render_template,send
 import os
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
- 
+from dotenv import load_dotenv
+
+load_dotenv()
+API_URL=os.getenv("API_URL")
+
 app = Flask(__name__)
  
 # UPLOADS_PATH = 'static/uploads/'
@@ -37,13 +41,13 @@ def home():
 # @app.route('/', methods=['POST'])
 # def upload_image():
     
-           # return render_template('index.html')
+           # return render_template('main.html')
 
 @app.route('/submit',methods=['POST','GET'])
 def submit():
 
     # os.remove(os.path.join(app.config['UPLOADS_PATH'], filename2))  
-    dir = 'env/static/uploads'
+    dir = 'static/uploads'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
     if 'files[]' not in request.files:
@@ -85,7 +89,7 @@ def download():
     # file1 = os.path.join(app.config['UPLOADS_PATH'], filename2)
     # df = pd.read_excel(file1)
     print("Welcome to pymongo")
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    client = pymongo.MongoClient(API_URL)
     print(client)
 
     # df1.to_csv("try.csv", index=None, header=True)
@@ -172,7 +176,7 @@ def compute(filename,filename2):
     df1 = pd.read_excel(file1)
     print(df1)
     print("Welcome to pymongo")
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    client = pymongo.MongoClient(API_URL)
     print(client)
 
     # df1.to_csv("try.csv", index=None, header=True)
@@ -292,29 +296,32 @@ def compute(filename,filename2):
         if i.strip(" ").upper() not in stud_attend:
             stud_attend[i.strip(" ").upper()] = "A"
     # Empty column creation for the person to append the attendance list created
-    df1[date] = list(range(0, len(df1["Full Name"])))
 
 
     # For each person put the value True or False according to rules defined above
     d = list(df1["Full Name"])
 
-    for i in d:
-        df1[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
-
-    for j in range(0, len(df1["Full Name"])):
-        prev = {'Full Name':df1['Full Name'][j]}
-        nextt3={'$set':{date:str(df1[date][j])}}
-        collection.update_one(prev,nextt3)
-        print(stud_attend[i.strip(" ").upper()])
-
     
-    df1 = df1.set_index("Scholar No")
-    df1 = df1.sort_values("Scholar No")
 
     all_docs = collection.find({},{'_id':0})
     list_cursor=list(all_docs)
     df5=pd.DataFrame(list_cursor)
     print(df5)
+
+    df5[date] = list(range(0, len(df5["Full Name"])))
+    for i in d:
+        df5[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
+    # for j in range(0, len(df1["Full Name"])):
+    #     prev = {'Full Name':df1['Full Name'][j]}
+    #     nextt3={'$set':{date:str(df1[date][j])}}
+    #     collection.update_one(prev,nextt3)
+    #     print(stud_attend[i.strip(" ").upper()])
+
+    
+    df1 = df1.set_index("Scholar No")
+    df1 = df1.sort_values("Scholar No")
+
+
     totol=0
     df5 = df5.set_index("Scholar No")
     if "Total" not in df5:
@@ -345,10 +352,10 @@ def compute(filename,filename2):
         print(df5['Total'][j])
         nextt = {'$set':{'Total':str(df5['Total'][j])}}
         nextt2={'$set':{'Percentage':str(df5['Percentage'][j])}}
-        # nextt3={'$set':{date:str(df3[date][j])}}
+        nextt3={'$set':{date:str(df3[date][j])}}
         collection.update_one(prev,nextt)
         collection.update_one(prev,nextt2)
-        # collection.update_one(prev,nextt3)
+        collection.update_one(prev,nextt3)
 
     df5.to_excel(path)
     wb = openpyxl.load_workbook(path)
@@ -366,52 +373,7 @@ def compute(filename,filename2):
     print(file1)
     print('\nDone!Check your Excel')
 
-    # for column in df1.columns:
-    #     if ((column != "Full Name") and (column != "Total") and (column != "Percentage")):
-    #         totol += 1
-
-    # for j in range(0, len(df1["Full Name"])):
-    #     # print(df3[date][j]," ",df3["Tota"][j])
-    #     py_int = np.int64(df1["Total"][j]).item()
-    #     if df1[date][j] == "P":
-    #         py_int += 1
-    #         df1["Total"][j] = py_int
-    #     df1["Percentage"][j] = py_int*100/totol
-
-    #     df3 = df1[["Full Name"]].copy()
-    # for column in df1.columns:
-    #     if ((column != "Scholar No") or (column != "Full Name") or (column != "Total") or (column != "Percentage")):
-    #         df3[column] = df1[column]
     
-
-    # for j in range(0, len(df3["Full Name"])):
-    #     prev = {'Full Name':df3['Full Name'][j]}
-    #     print(df3['Total'][j])
-    #     nextt = {'$set':{'Total':str(df3['Total'][j])}}
-    #     nextt2={'$set':{'Percentage':str(df3['Percentage'][j])}}
-    #     # nextt3={'$set':{date:str(df3[date][j])}}
-    #     collection.update_one(prev,nextt)
-    #     collection.update_one(prev,nextt2)
-    #     # collection.update_one(prev,nextt3)
-
-
-    # df3.to_excel(path)
-    # wb = openpyxl.load_workbook(path)
-    # ws = wb['Sheet1']
-    # fill_pattern = PatternFill(patternType='solid', fgColor='C64747')
-    # for j in range(0, len(df1["Full Name"])):
-
-    #     if(df3["Percentage"][j] < 75):
-    #         my_list = list(df3)
-    #         index = my_list.index("Percentage")
-    #         col = chr(index+65+1)
-    #         ws[col+str(j+2)].fill = fill_pattern
-    #         wb.save(path)
-    # print(df3)
-    # print(file1)
-    # print('\nDone!Check your Excel')
-    # download(file1)
-
 
 
 

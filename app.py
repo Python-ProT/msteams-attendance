@@ -12,8 +12,8 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 load_dotenv()
-API_URL=os.getenv("API_URL")
-
+# API_URL=os.getenv("API_URL")
+API_URL="mongodb+srv://project-prot:9557930603@cluster1.nan0h.mongodb.net/test"
 app = Flask(__name__)
  
 # UPLOADS_PATH = 'static/uploads/'
@@ -36,12 +36,6 @@ def allowed_file(filename):
 def home():
     return render_template('index.html')
 
-
-
-# @app.route('/', methods=['POST'])
-# def upload_image():
-    
-           # return render_template('main.html')
 
 @app.route('/submit',methods=['POST','GET'])
 def submit():
@@ -86,8 +80,6 @@ def submit():
 def download():
     global filename2
 
-    # file1 = os.path.join(app.config['UPLOADS_PATH'], filename2)
-    # df = pd.read_excel(file1)
     print("Welcome to pymongo")
     client = pymongo.MongoClient(API_URL)
     print(client)
@@ -97,22 +89,14 @@ def download():
     db =client["Attendance"]
     print(db)
     collection=db[filename2]
-    # data = df.to_dict(orient="records")
-    # print(data)
-    # if collection.count()==0:
-    #     collection.insert_many(data)
-    # else:
-    #     for column in df.columns:
-    #         print(column)
-    #         collection.update_many({column: {"$exists": False}}, {"$set": {column:""}})
+
     os.remove(os.path.join(app.config['UPLOADS_PATH'], filename2))
     all_docs = collection.find({},{'_id':0})
     list_cursor=list(all_docs)
     df3=pd.DataFrame(list_cursor)
     df3=df3.set_index("Scholar No")
-    print(df3)
+    # print(df3)
     df3.to_excel(os.path.join(app.config['UPLOADS_PATH'], filename2))
-    # bla=os.path.join(app.config['UPLOADS_PATH'], filename2)
     wb = openpyxl.load_workbook(os.path.join(app.config['UPLOADS_PATH'], filename2))
     ws = wb['Sheet1']
     fill_pattern = PatternFill(patternType='solid', fgColor='C64747')
@@ -129,7 +113,7 @@ def download():
             ws[col+str(j+2)].fill = fill_pattern
             wb.save(os.path.join(app.config['UPLOADS_PATH'], filename2))
     uploads=os.path.join(app.config['UPLOADS_PATH'], filename2)
-    print(uploads)
+    # print(uploads)
 
     return send_file(uploads,as_attachment=True) 
 
@@ -174,7 +158,7 @@ def compute(filename,filename2):
     file2 = os.path.join(app.config['UPLOADS_PATH'], filename)
     file1 = os.path.join(app.config['UPLOADS_PATH'], filename2)
     df1 = pd.read_excel(file1)
-    print(df1)
+    # print(df1)
     print("Welcome to pymongo")
     client = pymongo.MongoClient(API_URL)
     print(client)
@@ -182,28 +166,22 @@ def compute(filename,filename2):
     # df1.to_csv("try.csv", index=None, header=True)
     # df = pd.read_csv(df1)
     db =client["Attendance"]
-    print(db)
+    # print(db)
     collection=db[filename2]
     data = df1.to_dict(orient="records")
-    print(data)
+    # print(data)
     if collection.count()==0:
         collection.insert_many(data)
         
-    # else:
-    #     for column in df1.columns:
-    #         print(column)
-    #         collection.update_many({column: {"$exists": False}}, {"$set": {column:""}})
-
-    # totol += 1
-    path = os.path.join(app.config['UPLOADS_PATH'], filename2)
+    # path = os.path.join(app.config['UPLOADS_PATH'], filename2)
 
     df2 = pd.read_csv(file2, encoding="utf-16", sep='\t')
-    print(df2)
+    # print(df2)
     newdate = df2["Timestamp"][0].split(',')[0]
     date = newdate.split('/')[1] + "/" + \
         newdate.split('/')[0] + "/" + newdate.split('/')[2]
-    print(date)
-    print(df2["Timestamp"][0].split(',')[0])
+    # print(date)
+    # print(df2["Timestamp"][0].split(',')[0])
     start=request.form['start']
     end=request.form['end']
     start = start.split(":")      
@@ -243,17 +221,17 @@ def compute(filename,filename2):
     if len(s) == 1:
         s = "0" + str(s)
     end_time = h + ":" + m + ":" + s + " " + t
-    print(end_time)
+    # print(end_time)
 
     thers = "25"
     # print(thers)
     # print(date)
-    print(type(df2["Full Name"]))
+    # print(type(df2["Full Name"]))
     stud_attend = {}.fromkeys(df2["Full Name"])
     # print(stud_attend)
     for i in stud_attend:
         i.strip(" ").upper()
-        print(i.strip(" ").upper())
+        # print(i.strip(" ").upper())
     # Timestamp extraction for individual students
     l = []
     # ye ek ka time bta rha h ek jagah pe
@@ -292,7 +270,7 @@ def compute(filename,filename2):
 
     # Empty column creation for the person to append the attendance list created
     for i in df1["Full Name"]:
-        print(i.strip(" ").upper())
+        # print(i.strip(" ").upper())
         if i.strip(" ").upper() not in stud_attend:
             stud_attend[i.strip(" ").upper()] = "A"
     # Empty column creation for the person to append the attendance list created
@@ -306,72 +284,64 @@ def compute(filename,filename2):
     all_docs = collection.find({},{'_id':0})
     list_cursor=list(all_docs)
     df5=pd.DataFrame(list_cursor)
-    print(df5)
+    # print(df5)
+    datenorep=collection.find({date:{"$exists":True}})
+    if datenorep=="":
+        df5[date] = list(range(0, len(df5["Full Name"])))
+        for i in d:
+            df5[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
+        # for j in range(0, len(df1["Full Name"])):
+        #     prev = {'Full Name':df1['Full Name'][j]}
+        #     nextt3={'$set':{date:str(df1[date][j])}}
+        #     collection.update_one(prev,nextt3)
+        #     print(stud_attend[i.strip(" ").upper()])
 
-    df5[date] = list(range(0, len(df5["Full Name"])))
-    for i in d:
-        df5[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
-    # for j in range(0, len(df1["Full Name"])):
-    #     prev = {'Full Name':df1['Full Name'][j]}
-    #     nextt3={'$set':{date:str(df1[date][j])}}
-    #     collection.update_one(prev,nextt3)
-    #     print(stud_attend[i.strip(" ").upper()])
-
-    
-    df1 = df1.set_index("Scholar No")
-    df1 = df1.sort_values("Scholar No")
+        
+        df1 = df1.set_index("Scholar No")
+        df1 = df1.sort_values("Scholar No")
 
 
-    totol=0
-    df5 = df5.set_index("Scholar No")
-    if "Total" not in df5:
-        df5["Total"] = 0
+        totol=0
+        df5 = df5.set_index("Scholar No")
+        if "Total" not in df5:
+            df5["Total"] = 0
 
-    if "Percentage" not in df5:
-        df5["Percentage"] = 0
-    for column in df5.columns:
-        if ((column != "Full Name") and (column != "Total") and (column != "Percentage")):
-            totol += 1
+        if "Percentage" not in df5:
+            df5["Percentage"] = 0
+        for column in df5.columns:
+            if ((column != "Full Name") and (column != "Total") and (column != "Percentage")):
+                totol += 1
 
-    for j in range(0, len(df5["Full Name"])):
-        # print(df3[date][j]," ",df3["Tota"][j])
-        py_int = np.int64(df5["Total"][j]).item()
-        if df5[date][j] == "P":
-            py_int += 1
-            df5["Total"][j] = py_int
-        df5["Percentage"][j] = py_int*100/totol
+        for j in range(0, len(df5["Full Name"])):
+            # print(df3[date][j]," ",df3["Tota"][j])
+            py_int = np.int64(df5["Total"][j]).item()
+            if df5[date][j] == "P":
+                py_int += 1
+                df5["Total"][j] = py_int
+            df5["Percentage"][j] = py_int*100/totol
 
-        df3 = df5[["Full Name"]].copy()
-    for column in df5.columns:
-        if ((column != "Scholar No") or (column != "Full Name") or (column != "Total") or (column != "Percentage")):
-            df3[column] = df5[column]
-    
+            df3 = df5[["Full Name"]].copy()
+        for column in df5.columns:
+            if ((column != "Scholar No") or (column != "Full Name") or (column != "Total") or (column != "Percentage")):
+                df3[column] = df5[column]
+        
 
-    for j in range(0, len(df5["Full Name"])):
-        prev = {'Full Name':df5['Full Name'][j]}
-        print(df5['Total'][j])
-        nextt = {'$set':{'Total':str(df5['Total'][j])}}
-        nextt2={'$set':{'Percentage':str(df5['Percentage'][j])}}
-        nextt3={'$set':{date:str(df3[date][j])}}
-        collection.update_one(prev,nextt)
-        collection.update_one(prev,nextt2)
-        collection.update_one(prev,nextt3)
+        for j in range(0, len(df5["Full Name"])):
+            prev = {'Full Name':df5['Full Name'][j]}
+            print(df5['Total'][j])
+            nextt = {'$set':{'Total':str(df5['Total'][j])}}
+            nextt2={'$set':{'Percentage':str(df5['Percentage'][j])}}
+            nextt3={'$set':{date:str(df3[date][j])}}
+            collection.update_one(prev,nextt)
+            collection.update_one(prev,nextt2)
+            collection.update_one(prev,nextt3)
 
-    df5.to_excel(path)
-    wb = openpyxl.load_workbook(path)
-    ws = wb['Sheet1']
-    fill_pattern = PatternFill(patternType='solid', fgColor='C64747')
-    for j in range(0, len(df1["Full Name"])):
 
-        if(df5["Percentage"][j] < 75):
-            my_list = list(df5)
-            index = my_list.index("Percentage")
-            col = chr(index+65+1)
-            ws[col+str(j+2)].fill = fill_pattern
-            wb.save(path)
-    print(df5)
-    print(file1)
-    print('\nDone!Check your Excel')
+    else:
+        print("Already exist")
+
+
+    print('\nDone!')
 
     
 

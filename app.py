@@ -3,18 +3,21 @@ import pandas as pd
 import pymongo
 import openpyxl
 from openpyxl.styles import PatternFill
-
+# flask run --host=0.0.0.0 --port=80
 from flask import Flask, flash, request, redirect, url_for, render_template,send_file
 # import urllib.request
 import os
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
-
-load_dotenv()
+# from dotenv import load_dotenv
+# from flask_ngrok import run_with_ngrok
+  
+# app = Flask(__name__)
+# load_dotenv()
 # API_URL=os.getenv("API_URL")
-API_URL="mongodb+srv://project-prot:9557930603@cluster1.nan0h.mongodb.net/test"
+API_URL="mongodb+srv://projectpy:projectpy123@python.nan0h.mongodb.net/test"
 app = Flask(__name__)
+# run_with_ngrok(app)
  
 # UPLOADS_PATH = 'static/uploads/'
 UPLOADS_PATH = join(dirname(realpath(__file__)), 'static/uploads')
@@ -285,60 +288,60 @@ def compute(filename,filename2):
     list_cursor=list(all_docs)
     df5=pd.DataFrame(list_cursor)
     # print(df5)
-    datenorep=collection.find({date:{"$exists":True}})
-    if datenorep=="":
-        df5[date] = list(range(0, len(df5["Full Name"])))
-        for i in d:
-            df5[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
-        # for j in range(0, len(df1["Full Name"])):
-        #     prev = {'Full Name':df1['Full Name'][j]}
-        #     nextt3={'$set':{date:str(df1[date][j])}}
-        #     collection.update_one(prev,nextt3)
-        #     print(stud_attend[i.strip(" ").upper()])
+    # datenorep=collection.find({date:{"$exists":True}})
+    # if datenorep=="":
+    df5[date] = list(range(0, len(df5["Full Name"])))
+    for i in d:
+        df5[date][d.index(i)] = stud_attend[i.strip(" ").upper()]
+    # for j in range(0, len(df1["Full Name"])):
+    #     prev = {'Full Name':df1['Full Name'][j]}
+    #     nextt3={'$set':{date:str(df1[date][j])}}
+    #     collection.update_one(prev,nextt3)
+    #     print(stud_attend[i.strip(" ").upper()])
 
-        
-        df1 = df1.set_index("Scholar No")
-        df1 = df1.sort_values("Scholar No")
-
-
-        totol=0
-        df5 = df5.set_index("Scholar No")
-        if "Total" not in df5:
-            df5["Total"] = 0
-
-        if "Percentage" not in df5:
-            df5["Percentage"] = 0
-        for column in df5.columns:
-            if ((column != "Full Name") and (column != "Total") and (column != "Percentage")):
-                totol += 1
-
-        for j in range(0, len(df5["Full Name"])):
-            # print(df3[date][j]," ",df3["Tota"][j])
-            py_int = np.int64(df5["Total"][j]).item()
-            if df5[date][j] == "P":
-                py_int += 1
-                df5["Total"][j] = py_int
-            df5["Percentage"][j] = py_int*100/totol
-
-            df3 = df5[["Full Name"]].copy()
-        for column in df5.columns:
-            if ((column != "Scholar No") or (column != "Full Name") or (column != "Total") or (column != "Percentage")):
-                df3[column] = df5[column]
-        
-
-        for j in range(0, len(df5["Full Name"])):
-            prev = {'Full Name':df5['Full Name'][j]}
-            print(df5['Total'][j])
-            nextt = {'$set':{'Total':str(df5['Total'][j])}}
-            nextt2={'$set':{'Percentage':str(df5['Percentage'][j])}}
-            nextt3={'$set':{date:str(df3[date][j])}}
-            collection.update_one(prev,nextt)
-            collection.update_one(prev,nextt2)
-            collection.update_one(prev,nextt3)
+    
+    df1 = df1.set_index("Scholar No")
+    df1 = df1.sort_values("Scholar No")
 
 
-    else:
-        print("Already exist")
+    totol=0
+    df5 = df5.set_index("Scholar No")
+    if "Total" not in df5:
+        df5["Total"] = 0
+
+    if "Percentage" not in df5:
+        df5["Percentage"] = 0
+    for column in df5.columns:
+        if ((column != "Full Name") and (column != "Total") and (column != "Percentage")):
+            totol += 1
+
+    for j in range(0, len(df5["Full Name"])):
+        # print(df3[date][j]," ",df3["Tota"][j])
+        py_int = np.int64(df5["Total"][j]).item()
+        if df5[date][j] == "P":
+            py_int += 1
+            df5["Total"][j] = py_int
+        df5["Percentage"][j] = py_int*100/totol
+
+        df3 = df5[["Full Name"]].copy()
+    for column in df5.columns:
+        if ((column != "Scholar No") or (column != "Full Name") or (column != "Total") or (column != "Percentage")):
+            df3[column] = df5[column]
+    
+
+    for j in range(0, len(df5["Full Name"])):
+        prev = {'Full Name':df5['Full Name'][j]}
+        print(df5['Total'][j])
+        nextt = {'$set':{'Total':str(df5['Total'][j])}}
+        nextt2={'$set':{'Percentage':str(df5['Percentage'][j])}}
+        nextt3={'$set':{date:str(df3[date][j])}}
+        collection.update_one(prev,nextt)
+        collection.update_one(prev,nextt2)
+        collection.update_one(prev,nextt3)
+
+
+    # else:
+    #     print("Already exist")
 
 
     print('\nDone!')
@@ -349,4 +352,4 @@ def compute(filename,filename2):
 
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run()

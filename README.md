@@ -38,6 +38,21 @@ MONGO_URI | create by using MongoDB atlas
 - Excel sheet- A file containing scholar number and name of each student of a batch.
 - CSV file- Downloaded attendance file from Microsoft Teams
 
+---
 ### Csv File
+![image](https://user-images.githubusercontent.com/79581223/145602811-e83dae5c-d340-4510-b745-b2e7b90fdaea.png)
+
+
+### Excel File
+![image](https://user-images.githubusercontent.com/79581223/145603046-6b3f084c-ff29-41a7-898e-c76a03c78897.png)
+
+
+### Sorted Excel File 
+![image](https://user-images.githubusercontent.com/79581223/145603472-c690ecdf-f215-492c-8ca0-dcb2e61edf6a.png)
+
+---
+
+### Application Interface
+![unknown](https://user-images.githubusercontent.com/79581223/145603679-3353accc-304d-4c2b-a3c6-5900c42e202f.png)
 
 
